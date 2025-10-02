@@ -1,8 +1,14 @@
 import { SupportedSymbol } from '../binance/types';
 import { SimulatedPosition, TradeLog, PerformanceMetrics, PositionSide, LogType } from './types';
 
-// Generate unique ID
-const generateId = () => crypto.randomUUID();
+// Generate unique ID - compatible with both client and server
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+};
 
 export interface TradeExecution {
   symbol: SupportedSymbol;
@@ -161,7 +167,7 @@ export class PortfolioSimulator {
     this.positions.delete(key);
 
     return {
-      id: uuidv4(),
+      id: generateId(),
       timestamp: new Date(),
       logType: 'CLOSE',
       symbol,

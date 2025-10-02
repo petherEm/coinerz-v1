@@ -79,7 +79,9 @@ export function useStrategyExecution() {
 
   const addInfoLog = useCallback((message: string) => {
     const log: TradeLog = {
-      id: crypto.randomUUID(),
+      id: typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date(),
       logType: 'INFO',
       symbol: 'BTCUSDT',
